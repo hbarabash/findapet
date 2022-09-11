@@ -3,7 +3,7 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import React, { useState } from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import { Grid, Typography } from "@material-ui/core";
+import { Box, Grid, Typography } from "@material-ui/core";
 import { styled } from "@mui/material/styles";
 import Collapse from "@mui/material/Collapse";
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
@@ -25,6 +25,7 @@ export interface SearchResultCardProperties {
   gender: string;
   location: string;
   age: string;
+  outcome:string;
   actions?: React.ReactNode[];
 }
 
@@ -74,14 +75,21 @@ export default function SearchResultCard(props: SearchResultCardProperties) {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
   //const [summary, setSummary] = useState("");
+  let color = "";
+  let risk = "";
+  if (props.outcome === '1' || props.outcome === '2') {
+    color = "red";
+    risk = "High risk";
+  }
+  else if (props.outcome === '3' || props.outcome === '4') {
+    color = "yellow";
+    risk = "Medium risk"
+  }
+  else {
+    color = "green"
+    risk = "Low risk";
+  }
 
-  
-
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
-
-  var desc = `Basic Information:\nGender: ${props.gender}\nAge: ${props.age}\nLocation: ${props.location}`
   return (
     <Card className={classes.card}>
       <CardContent>
@@ -93,33 +101,16 @@ export default function SearchResultCard(props: SearchResultCardProperties) {
           align-content="centre"
         >
           <Grid item className={classes.box}>
+            <Box bgcolor={color}>{risk}</Box>
             <img className={classes.image} src={props.image} alt="Pet" />
             <p>{props.title}</p>
-            <p>{desc}</p>
+            <p>Basic Information:<br></br>Gender: {props.gender}<br></br>Age: {props.age}<br></br>Location: {props.location}</p>
             <a href={props.link}>More Info</a>
           </Grid>
         </Grid>
       </CardContent>
       <CardActions className={classes.actions}>
-        {props.actions}
-        <ExpandMore
-          expand={expanded}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show more"
-        >
-          <ExpandMoreIcon />
-        </ExpandMore>
       </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-          
-          {/* <Typography paragraph>
-
-            {ReactHtmlParser(`${props.summary? props.summary : "No description found"}`)}
-          </Typography> */}
-        </CardContent>
-      </Collapse>
     </Card>
   );
 }

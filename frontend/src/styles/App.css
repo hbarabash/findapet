@@ -6,6 +6,7 @@ body {
     text-align: center;
     padding-bottom: 85px;
     font-family: 'Poppins', sans-serif;
+    align-items: center;
   }
   
   a.recipe-link {
@@ -14,6 +15,13 @@ body {
 
   .container img {
     width: 100%;
+ }
+
+ .grid-container {
+  display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-gap: 20px;
+    margin-top: 60px;
  }
 
  .MuiGrid-spacing-xs-1 {
