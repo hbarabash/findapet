@@ -1,0 +1,23 @@
+body {
+    background-color: #e2e2e2;
+  }
+  
+  .App {
+    text-align: center;
+    padding-bottom: 85px;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  a.recipe-link {
+    color:darkslategrey;
+  }
+
+  .container img {
+    width: 100%;
+ }
+
+ .MuiGrid-spacing-xs-1 {
+  width: calc(100% + 8px);
+  margin: -4px;
+  justify-content: center;
+}
