@@ -6,6 +6,8 @@ A random forest classifier model has been applied to the cats' information to pr
 Since shelters are often overwhelmed and overcrowded, this can help people looking for pets make a decision that will not only result in a wonderful companion for them, but also aid in finding cats that are more at risk 'forever homes'!
 ## How to run
 
+Make sure you have the cats_rf.pkl file downloaded in the backend folder so that the API can access the model. It can be obtained by running the 'fostercomp.ipynb' notebook
+
 ### In 2 terminals, navigate to the 'frontend' folder
 
 #### In the first terminal, start the API:
