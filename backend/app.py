@@ -5,6 +5,9 @@ import numpy as np
 import pickle
 import sys; print(sys.path)
 import petpy
+from datetime import datetime
+from datetime import date
+from sklearn import preprocessing
 
 app = Flask(__name__)
 
@@ -17,11 +20,34 @@ def ValuePredictor(to_predict, category):
     result = loaded_model.predict(to_predict)
     return result
 
+def getModelResults(df):
+    ages = {'Baby': 0, 'Young': 1, 'Adult': 2, 'Senior': 3}
+    modeldf = df
+    modeldf["attributes.spayed_neutered"] = modeldf["attributes.spayed_neutered"].fillna("unknown")
+    modeldf['SexuponOutcome'] =  modeldf['gender'].astype(str) +"-"+ modeldf["attributes.spayed_neutered"].astype(str)
+    modeldf['year'] =  date.today().year
+    modeldf['month'] =  date.today().month
+    modeldf['day'] =  date.today().day
+    modeldf['age'] = modeldf['age'].map(ages)
+    modeldf["colors.primary"] = modeldf["colors.primary"].fillna("unknown")
+    modeldf = modeldf[["breeds.primary", "SexuponOutcome", "year", "month", "day", "age", "colors.primary", "name"]]
+    le = preprocessing.LabelEncoder()
+    modeldf['colors.primary'] = le.fit_transform(modeldf['colors.primary'])
+    modeldf['name'] = le.fit_transform(modeldf['name'])
+    modeldf['SexuponOutcome'] = le.fit_transform(modeldf['SexuponOutcome'])
+    modeldf['breeds.primary'] = le.fit_transform(modeldf['breeds.primary'])
+    
+    #normalizing data
+    MinMaxScaler = preprocessing.MinMaxScaler()
+    X_data_minmax = MinMaxScaler.fit_transform(modeldf)
+    modeldf = pd.DataFrame(X_data_minmax,columns=modeldf.columns)
+    return df
 def getpets(gender=None, location=None, breed=None):
     pf = petpy.Petfinder(key='2p8Gsyz5kSnyKFNp4w7XqmNWD5UDHgPJ5Qkn9gLp9XHbkXOp68', secret='EEjObz7j3VQ0XhrOgITmyiZUK4nTg0LtJMcGzHdb')
     cats_df = pf.animals(animal_type='cat', status='adoptable', gender=gender, location=location, 
     breed=breed, return_df = True)
     cats_df = cats_df.drop('organization_id', axis=1)
+    cats_df = getModelResults(cats_df)
     cats_json = cats_df.to_json(orient='records')
     return cats_json
     return np.array2string(cats_df[['id']].to_numpy())
@@ -47,7 +73,6 @@ def resulta():
 # need result() to be distinct
 def resultb():
     if request.method == 'GET':
-        
         gender = request.args.get('gender')
         location = request.args.get('location')
         breed = request.args.get('breed')
